@@ -2,6 +2,8 @@
 
 namespace ZfcUser;
 
+use Zend\Console\Adapter\AdapterInterface as Console;
+use Zend\ModuleManager\Feature\ConsoleUsageProviderInterface;
 use Zend\ModuleManager\ModuleManager;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
@@ -10,7 +12,8 @@ use Zend\ModuleManager\Feature\ServiceProviderInterface;
 class Module implements
     AutoloaderProviderInterface,
     ConfigProviderInterface,
-    ServiceProviderInterface
+    ServiceProviderInterface,
+    ConsoleUsageProviderInterface
 {
     public function getAutoloaderConfig()
     {
@@ -163,6 +166,25 @@ class Module implements
                     return $mapper;
                 },
             ),
+        );
+    }
+
+
+    /**
+     * Define Console Help text
+     *
+     */
+    public function getConsoleUsage(Console $console)
+    {
+        return array(
+            'user list [--state=] [--fields=]'    => 'List all users in the database.',
+            'user view <id>' => 'View specified user details.',
+            'user add <email> [--password=] [--username=] [--displayname=] [--state=]'
+                => 'Add new user into database.',
+
+            array('--state=',  'User state value (Integer).'),
+            array('--fields=', 'Comma-separated list of fields to display.'),
+            array('<id>',      'User identification, accepts: id number, email, or username.'),
         );
     }
 }

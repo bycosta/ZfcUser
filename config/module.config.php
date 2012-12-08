@@ -7,7 +7,8 @@ return array(
     ),
     'controllers' => array(
         'invokables' => array(
-            'zfcuser' => 'ZfcUser\Controller\UserController',
+            'zfcuser'         => 'ZfcUser\Controller\UserController',
+            'zfcuser_console' => 'ZfcUser\Controller\ConsoleController',
         ),
     ),
     'service_manager' => array(
@@ -99,6 +100,39 @@ return array(
                             'query' => array(
                                 'type' => 'Query',
                             ),
+                        ),
+                    ),
+                ),
+            ),
+        ),
+    ),
+    'console' => Array(
+        'router' => array(
+            'routes' => array(
+                'zfcuser-list' => array(
+                    'options' => array(
+                        'route'    => 'user list [--state=] [--fields=]',
+                        'defaults' => array(
+                            'controller' => 'zfcuser_console',
+                            'action'     => 'list'
+                        ),
+                    ),
+                ),
+                'zfcuser-view' => array(
+                    'options' => array(
+                        'route'    => 'user view <id>',
+                        'defaults' => array(
+                            'controller' => 'zfcuser_console',
+                            'action'     => 'view'
+                        ),
+                    ),
+                ),
+                'zfcuser-add' => array(
+                    'options' => array(
+                        'route'    => 'user add <email> [--password=] [--username=] [--displayname=] [--state=]',
+                        'defaults' => array(
+                            'controller' => 'zfcuser_console',
+                            'action'     => 'add'
                         ),
                     ),
                 ),
