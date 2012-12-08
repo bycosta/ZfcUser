@@ -2,8 +2,10 @@
 
 namespace ZfcUser\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Console\Request as ConsoleRequest;
+use Zend\Math\Rand;
+use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Stdlib\Hydrator\ClassMethods;
 use ZfcUser\Service\User as UserService;
 use ZfcUser\Options\UserControllerOptionsInterface;
 
@@ -74,11 +76,11 @@ class ConsoleController extends AbstractActionController
 
 
     /**
-     * Add new user into database
+     * Registers a new user in the database
      *
      * @return String
      */
-    public function addAction()
+    public function registerAction()
     {
         /**
          * Enforce valid console request
@@ -92,14 +94,58 @@ class ConsoleController extends AbstractActionController
         /**
          * Retrieve parameters
          */
-        $email       = $request->getParam('email');
-        $password    = $request->getParam('password');
-        $username    = $request->getParam('username');
-        $displayname = $request->getParam('displayname');
-        $state       = $request->getParam('state');
+        $params = Array(
+            'email'        => $request->getParam('email'),
+            'password'     => $request->getParam('password', Rand::getString(16)),
+            'username'     => $request->getParam('username'),
+            'display_name' => $request->getParam('displayname'),
+            'state'        => $request->getParam('state'),
+        );
 
 
-        return "Reached ConsoleController::addAction();\n";
+        /**
+         * Handle passwordVerify field
+         */
+        $params['passwordVerify'] = $params['password'];
+
+
+
+        /**
+         * Validate against form
+         */
+        $service = $this->getUserService();
+        $class   = $this->getOptions()->getUserEntityClass();
+        $user    = new $class;
+        $form    = $service->getRegisterForm();
+        $form->setHydrator(new ClassMethods());
+        $form->bind($user);
+        $form->setData($params);
+
+
+        /**
+         * Handle invalid data
+         */
+        if (!$form->isValid()) {
+
+            $errors   = Array();
+
+            foreach ($form->getMessages() as $field => $messages) {
+                $errors[] = $field.": ".implode(", ", $messages);
+            }
+
+            $pre = "\n - ";
+            return "ERROR: Unable to register new user!\n"
+                  .$pre.implode($pre, $errors)."\n";
+        }
+
+
+        /**
+         * Attempt to register
+         */
+        $user = $service->register($params);
+
+        $password = (!$request->getParam('password')) ? "Generated password: {$params['password']}\n" : '';
+        return "User successfully registered for {$params['email']}.\n".$password;
     }
 
 

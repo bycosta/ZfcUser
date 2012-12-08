@@ -127,12 +127,12 @@ return array(
                         ),
                     ),
                 ),
-                'zfcuser-add' => array(
+                'zfcuser-register' => array(
                     'options' => array(
-                        'route'    => 'user add <email> [--password=] [--username=] [--displayname=] [--state=]',
+                        'route'    => 'user register <email> [--password=] [--username=] [--displayname=] [--state=]',
                         'defaults' => array(
                             'controller' => 'zfcuser_console',
-                            'action'     => 'add'
+                            'action'     => 'register'
                         ),
                     ),
                 ),

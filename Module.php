@@ -178,9 +178,9 @@ class Module implements
     {
         return array(
             'user list [--state=] [--fields=]'    => 'List all users in the database.',
-            'user view <id>' => 'View specified user details.',
-            'user add <email> [--password=] [--username=] [--displayname=] [--state=]'
-                => 'Add new user into database.',
+            'user view <id>'                      => 'View specified user details.',
+            'user register <email> [--password=] [--username=] [--displayname=] [--state=]'
+                                                  => 'Registers a new user into database.',
 
             array('--state=',  'User state value (Integer).'),
             array('--fields=', 'Comma-separated list of fields to display.'),
